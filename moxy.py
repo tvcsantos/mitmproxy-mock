@@ -125,6 +125,11 @@ def request_matches_config(request: http.Request, config: dict) -> bool:
             value = required_query[key]
             if not ((key in query) and matches_value_or_list(query[key], value)):
                 return False
+    required_headers = config.get("headers")
+    if required_headers:
+        headers = dict(request.headers)
+        if not content_matches(None, required_headers, headers):
+            return False
     required_content = config.get("request")
     if required_content and not content_matches(request.text, required_content):
         return False
